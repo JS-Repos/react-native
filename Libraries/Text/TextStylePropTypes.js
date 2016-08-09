@@ -11,7 +11,7 @@
  */
 'use strict';
 
-var ReactPropTypes = require('ReactPropTypes');
+var ReactPropTypes = require('react/lib/ReactPropTypes');
 var ColorPropType = require('ColorPropType');
 var ViewStylePropTypes = require('ViewStylePropTypes');
 
@@ -30,20 +30,38 @@ var TextStylePropTypes = Object.assign(Object.create(ViewStylePropTypes), {
     ['normal' /*default*/, 'bold',
      '100', '200', '300', '400', '500', '600', '700', '800', '900']
   ),
+ fontVariant: ReactPropTypes.arrayOf(
+   ReactPropTypes.oneOf([
+     'small-caps',
+     'oldstyle-nums',
+     'lining-nums',
+     'tabular-nums',
+     'proportional-nums',
+   ])
+  ),
+  textShadowOffset: ReactPropTypes.shape(
+    {width: ReactPropTypes.number, height: ReactPropTypes.number}
+  ),
+  textShadowRadius: ReactPropTypes.number,
+  textShadowColor: ColorPropType,
   /**
    * @platform ios
    */
   letterSpacing: ReactPropTypes.number,
   lineHeight: ReactPropTypes.number,
   /**
-   * Specifies text alignment. The value 'justify' is only supported on iOS.
+   * Specifies text alignment. The value 'justify' is only supported on iOS and
+   * fallbacks to `left` on Android.
    */
   textAlign: ReactPropTypes.oneOf(
     ['auto' /*default*/, 'left', 'right', 'center', 'justify']
   ),
   /**
-   * @platform ios
+   * @platform android
    */
+  textAlignVertical: ReactPropTypes.oneOf(
+    ['auto' /*default*/, 'top', 'bottom', 'center']
+  ),
   textDecorationLine: ReactPropTypes.oneOf(
     ['none' /*default*/, 'underline', 'line-through', 'underline line-through']
   ),
@@ -64,20 +82,5 @@ var TextStylePropTypes = Object.assign(Object.create(ViewStylePropTypes), {
     ['auto' /*default*/, 'ltr', 'rtl']
   ),
 });
-
-// Text doesn't support padding correctly (#4841912)
-var unsupportedProps = Object.keys({
-  padding: null,
-  paddingTop: null,
-  paddingLeft: null,
-  paddingRight: null,
-  paddingBottom: null,
-  paddingVertical: null,
-  paddingHorizontal: null,
-});
-
-for (var ii = 0; ii < unsupportedProps.length; ii++) {
-  delete TextStylePropTypes[unsupportedProps[ii]];
-}
 
 module.exports = TextStylePropTypes;
